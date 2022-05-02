@@ -2,7 +2,7 @@
  * @Author: imsixn
  * @Date: 2022-04-26 10:16:40
  * @LastEditors: imsixn
- * @LastEditTime: 2022-05-01 20:01:09
+ * @LastEditTime: 2022-05-02 12:44:13
  * @Description: file content
 -->
 <template>
@@ -27,6 +27,5 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 20px;
 }
 </style>
