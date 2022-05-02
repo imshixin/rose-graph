@@ -1,5 +1,11 @@
+<!--
+ * @Author: imsixn
+ * @Date: 2022-04-26 10:16:40
+ * @LastEditors: imsixn
+ * @LastEditTime: 2022-05-01 20:01:09
+ * @Description: file content
+-->
 <template>
-  <img alt="Vue logo" src="./assets/logo.png">
   <HelloWorld msg="Welcome to Your Vue.js App"/>
 </template>
 
@@ -21,6 +27,6 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
+  margin-top: 20px;
 }
 </style>
