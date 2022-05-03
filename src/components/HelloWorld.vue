@@ -2,7 +2,7 @@
  * @Author: imsixn
  * @Date: 2022-04-26 10:16:40
  * @LastEditors: imsixn
- * @LastEditTime: 2022-05-02 22:41:36
+ * @LastEditTime: 2022-05-03 13:41:48
  * @Description: file content
 -->
 <template>
@@ -11,8 +11,9 @@
       <el-header id="header">玫瑰花图生成器</el-header>
       <el-container>
         <el-main>
+          <el-scrollbar dirention='horizontal'>
           <el-row>
-            <el-col :span="12">
+            <el-col :span="24">
               <el-card class="left-card">
                 <template #header>
                   <el-row>
@@ -100,14 +101,9 @@
                 </el-row>
               </el-card>
             </el-col>
-            <el-col :span="12">
-              <div
-                id="strikeChart"
-                ref="strikeChart"
-                style="height: 500px; width: 100%"
-              ></div>
-            </el-col>
           </el-row>
+          <div id="chart" ref="chart" style="height: 500px; width: 100%"></div>
+          </el-scrollbar>
         </el-main>
       </el-container>
     </el-container>
@@ -127,7 +123,7 @@ export default {
   data() {
     return {
       colWidth: 100,
-      tableHeight: 400,
+      tableHeight: 300,
       /* {
         strike:102,//走向
         dip:'2'//倾角
@@ -207,8 +203,8 @@ export default {
       console.log("event", event);
     },
     updateChart() {
-      console.log('updateChart');
-      this.initEchart(this.avgData.strike,this.avgData.dip);
+      console.log("updateChart");
+      this.initEchart(this.avgData.strike, this.avgData.dip);
     },
     renderItem(params, api, data) {
       // console.log('params.coordSys.r',params.coordSys.r,'params.coordSys.r0',params.coordSys.r0);
@@ -278,43 +274,48 @@ export default {
     initEchart(strikeData = [], dipData = []) {
       console.log("initEchart");
       if (this.echart == undefined)
-        this.echart = echarts.init(this.$refs.strikeChart);
+        this.echart = echarts.init(this.$refs.chart, "", {
+          renderer: "svg",
+        });
       strikeData.sort((a, b) => a[0] - b[0]);
       dipData.sort((a, b) => a[0] - b[0]);
-      let that=this;
+      let that = this;
+
       let option = {
         title: [
           {
             text: "走向玫瑰图",
             left: "10%",
+            top:'17%',
           },
           {
             text: "倾角玫瑰花图",
             right: "10%",
+            top:'17%',
           },
         ],
-        // dataZoom: [
-        //   {
-        //     type: "inside",
-        //     filterMode: "empty",
-        //     angleAxisIndex: 0,
-        //   },
-        //   {
-        //     type: "slider",
-        //     filterMode: "empty",
-        //     radiusAxisIndex: 0,
-        //     // right: "10%",
-        //     startValue: 0,
-        //     showDataShadow: true,
-        //     orient: "vertical",
-        //     minSpan: 0,
-        //     minValueSpan: 0,
-        //     labelPrecision: 0,
-        //     labelFormatter: "{value}个" /* (value){
-        //       return value+'个'
-        //     } */,
-        //   },
-        // ],
+        dataZoom: [
+          // {
+          //   type: "inside",
+          //   filterMode: "empty",
+          //   angleAxisIndex: 0,
+          // },
+          // {
+          //   type: "slider",
+          //   filterMode: "empty",
+          //   radiusAxisIndex: 0,
+          //   // right: "10%",
+          //   startValue: 0,
+          //   showDataShadow: true,
+          //   orient: "vertical",
+          //   minSpan: 0,
+          //   minValueSpan: 0,
+          //   labelPrecision: 0,
+          //   labelFormatter: "{value}个" /* (value){
+          //     return value+'个'
+          //   } */,
+          // },
+        ],
         tooltip: {
           trigger: "axis",
           confine: true,
@@ -323,14 +324,14 @@ export default {
         radiusAxis: [
           {
             type: "value",
-            polarIndex:0,
+            polarIndex: 0,
             // name: "半径",
             min: 0,
             max: "dataMax",
           },
           {
             type: "value",
-            polarIndex:1,
+            polarIndex: 1,
             // name: "半径",
             min: 0,
             max: "dataMax",
@@ -354,7 +355,7 @@ export default {
             name: "角度",
             min: 0,
             max: 360,
-            polarIndex:0,
+            polarIndex: 0,
             axisLabel: {
               formatter: "{value}°",
             },
@@ -367,7 +368,7 @@ export default {
             name: "角度",
             min: 0,
             max: 360,
-            polarIndex:1,
+            polarIndex: 1,
             axisLabel: {
               formatter: "{value}°",
             },
@@ -456,7 +457,9 @@ export default {
   justify-content: center;
   height: 100%;
 }
-.left-card {
+#chart {
+  width: 100%;
+  height: 400px;
 }
 .table {
   // width: 200px;
