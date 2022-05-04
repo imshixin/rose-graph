@@ -2,7 +2,7 @@
  * @Author: imsixn
  * @Date: 2022-04-26 10:16:40
  * @LastEditors: imsixn
- * @LastEditTime: 2022-05-03 13:41:48
+ * @LastEditTime: 2022-05-04 09:10:12
  * @Description: file content
 -->
 <template>
@@ -11,7 +11,6 @@
       <el-header id="header">玫瑰花图生成器</el-header>
       <el-container>
         <el-main>
-          <el-scrollbar dirention='horizontal'>
           <el-row>
             <el-col :span="24">
               <el-card class="left-card">
@@ -45,8 +44,9 @@
                   </el-row>
                 </template>
                 <!-- 表格 -->
+                <el-scrollbar>
                 <el-row justify="space-between" :gutter="10">
-                  <el-col :span="8">
+                  <el-col :span="8" :xs='24' :sm='8'>
                     <el-table
                       :data="tableData"
                       stripe
@@ -61,7 +61,7 @@
                       </el-table-column>
                     </el-table>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :span="8" :xs='24' :sm='8'>
                     <el-table
                       :height="this.tableHeight"
                       stripe
@@ -80,7 +80,7 @@
                       </el-table-column>
                     </el-table>
                   </el-col>
-                  <el-col :span="8">
+                  <el-col :span="8" :xs='24' :sm='8'>
                     <el-table
                       :height="this.tableHeight"
                       stripe
@@ -99,11 +99,11 @@
                     </el-table>
                   </el-col>
                 </el-row>
+                </el-scrollbar>
               </el-card>
             </el-col>
           </el-row>
           <div id="chart" ref="chart" style="height: 500px; width: 100%"></div>
-          </el-scrollbar>
         </el-main>
       </el-container>
     </el-container>
@@ -124,6 +124,8 @@ export default {
     return {
       colWidth: 100,
       tableHeight: 300,
+      screenWidth:0,
+      chartHeight:400,
       /* {
         strike:102,//走向
         dip:'2'//倾角
@@ -439,6 +441,11 @@ export default {
     },
   },
   mounted() {
+    const that = this;
+    that.chartHeight=400;
+    window.onresize=function(){
+      that.screenWidth = document.body.clientWidth
+    }
     this.initEchart();
   },
 };
