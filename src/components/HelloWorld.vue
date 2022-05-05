@@ -2,7 +2,7 @@
  * @Author: imsixn
  * @Date: 2022-04-26 10:16:40
  * @LastEditors: imsixn
- * @LastEditTime: 2022-05-04 09:10:12
+ * @LastEditTime: 2022-05-05 22:28:38
  * @Description: file content
 -->
 <template>
@@ -44,66 +44,64 @@
                   </el-row>
                 </template>
                 <!-- 表格 -->
-                <el-scrollbar>
-                <el-row justify="space-between" :gutter="10">
-                  <el-col :span="8" :xs='24' :sm='8'>
-                    <el-table
-                      :data="tableData"
-                      stripe
-                      border
-                      :height="this.tableHeight"
-                      class="table main-table"
-                      @cell-click="cellClick"
-                    >
-                      <el-table-column prop="strike" label="走向">
-                      </el-table-column>
-                      <el-table-column prop="dip" label="倾角">
-                      </el-table-column>
-                    </el-table>
-                  </el-col>
-                  <el-col :span="8" :xs='24' :sm='8'>
-                    <el-table
-                      :height="this.tableHeight"
-                      stripe
-                      border
-                      class="table strike-table"
-                      :data="this.avgData.strike"
-                    >
-                      <el-table-column
-                        label="走向均值"
-                        :width="this.tableWidth"
+                  <el-row justify="space-between" :gutter="10">
+                    <el-col :span="8" :xs="24" :sm="8">
+                      <el-table
+                        :data="tableData"
+                        stripe
+                        border
+                        :height="this.tableHeight"
+                        class="table main-table"
+                        @cell-click="cellClick"
                       >
-                        <el-table-column label="角度" prop="0">
+                        <el-table-column prop="strike" label="走向">
                         </el-table-column>
-                        <el-table-column label="数量" prop="1">
+                        <el-table-column prop="dip" label="倾角">
                         </el-table-column>
-                      </el-table-column>
-                    </el-table>
-                  </el-col>
-                  <el-col :span="8" :xs='24' :sm='8'>
-                    <el-table
-                      :height="this.tableHeight"
-                      stripe
-                      class="table dip-table"
-                      :data="this.avgData.dip"
-                    >
-                      <el-table-column
-                        label="倾角均值"
-                        :width="this.tableWidth"
+                      </el-table>
+                    </el-col>
+                    <el-col :span="8" :xs="24" :sm="8">
+                      <el-table
+                        :height="this.tableHeight"
+                        stripe
+                        border
+                        class="table strike-table"
+                        :data="this.avgData.strike"
                       >
-                        <el-table-column label="角度" prop="0">
+                        <el-table-column
+                          label="走向均值"
+                          :width="this.tableWidth"
+                        >
+                          <el-table-column label="角度" prop="0">
+                          </el-table-column>
+                          <el-table-column label="数量" prop="1">
+                          </el-table-column>
                         </el-table-column>
-                        <el-table-column label="数量" prop="1">
+                      </el-table>
+                    </el-col>
+                    <el-col :span="8" :xs="24" :sm="8">
+                      <el-table
+                        :height="this.tableHeight"
+                        stripe
+                        class="table dip-table"
+                        :data="this.avgData.dip"
+                      >
+                        <el-table-column
+                          label="倾角均值"
+                          :width="this.tableWidth"
+                        >
+                          <el-table-column label="角度" prop="0">
+                          </el-table-column>
+                          <el-table-column label="数量" prop="1">
+                          </el-table-column>
                         </el-table-column>
-                      </el-table-column>
-                    </el-table>
-                  </el-col>
-                </el-row>
-                </el-scrollbar>
+                      </el-table>
+                    </el-col>
+                  </el-row>
               </el-card>
             </el-col>
           </el-row>
-          <div id="chart" ref="chart" style="height: 500px; width: 100%"></div>
+          <div id="chart" ref="chart" :style="{height:this.chartHeight+'px',width:'100%',minWidth:'600px'}"></div>
         </el-main>
       </el-container>
     </el-container>
@@ -112,8 +110,7 @@
 
 <script>
 import * as echarts from "echarts";
-// import {} from "element-plus";
-
+import { markRaw } from "vue";
 export default {
   name: "HelloWorld",
   props: {
@@ -124,8 +121,10 @@ export default {
     return {
       colWidth: 100,
       tableHeight: 300,
-      screenWidth:0,
-      chartHeight:400,
+      screenWidth: 0,
+      horizontalHeight: 500,
+      verticalHeight:800,
+      chartHeight:500,
       /* {
         strike:102,//走向
         dip:'2'//倾角
@@ -136,6 +135,54 @@ export default {
         dip: [],
       },
       echart: undefined,
+      horizontalOption: {
+        polar: [
+          {
+            center: ["25%", "50%"],
+            radius: "60%",
+          },
+          {
+            center: ["75%", "50%"],
+            radius: "60%",
+          },
+        ],
+        title: [
+          {
+            text: "走向",
+            left: "10%",
+            top: "10%",
+          },
+          {
+            text: "倾角",
+            right: "10%",
+            top: "10%",
+          },
+        ],
+      },
+      verticalOption: {
+        polar: [
+          {
+            center: ["50%", "30%"],
+            radius: "50%",
+          },
+          {
+            center: ["50%", "80%"],
+            radius: "50%",
+          },
+        ],
+        title: [
+          {
+            text: "走向",
+            left: "0%",
+            top: "10%",
+          },
+          {
+            text: "倾角",
+            left: "0%",
+            top: "57%",
+          },
+        ],
+      },
     };
   },
   watch: {
@@ -144,10 +191,12 @@ export default {
       console.time("avgData");
       let _strikes = this.tableData.map((v) => v.strike).sort();
       let _dips = this.tableData.map((v) => v.dip).sort();
-
       this.avgData.strike = this.getAvgData(_strikes, "strike");
       this.avgData.dip = this.getAvgData(_dips, "dip");
       console.timeEnd("avgData");
+    },
+    screenWidth() {
+      this.echart.resize(this.screenWidth, this.chartHeight);
     },
   },
   computed: {
@@ -276,26 +325,16 @@ export default {
     initEchart(strikeData = [], dipData = []) {
       console.log("initEchart");
       if (this.echart == undefined)
-        this.echart = echarts.init(this.$refs.chart, "", {
-          renderer: "svg",
-        });
+        this.echart = markRaw(
+          echarts.init(this.$refs.chart, "", {
+            renderer: "svg",
+          })
+        );
       strikeData.sort((a, b) => a[0] - b[0]);
       dipData.sort((a, b) => a[0] - b[0]);
       let that = this;
 
       let option = {
-        title: [
-          {
-            text: "走向玫瑰图",
-            left: "10%",
-            top:'17%',
-          },
-          {
-            text: "倾角玫瑰花图",
-            right: "10%",
-            top:'17%',
-          },
-        ],
         dataZoom: [
           // {
           //   type: "inside",
@@ -382,16 +421,7 @@ export default {
         axisLine: {
           show: true,
         },
-        polar: [
-          {
-            center: ["25%", "50%"],
-            radius: "40%",
-          },
-          {
-            center: ["75%", "50%"],
-            radius: "40%",
-          },
-        ],
+
         series: [
           {
             type: "custom",
@@ -437,15 +467,33 @@ export default {
           },
         ],
       };
-      this.echart.setOption(option);
+      // this.echart.setOption(option);
+      this.echart.setOption(Object.assign(option,
+        document.body.clientWidth < 768
+          ? this.verticalOption
+          : this.horizontalOption
+      ));
     },
   },
+
   mounted() {
     const that = this;
-    that.chartHeight=400;
-    window.onresize=function(){
-      that.screenWidth = document.body.clientWidth
-    }
+    window.onresize = (function () {
+      // that.screenWidth = document.body.clientWidth;
+      let timer;
+      return function () {
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+          that.chartHeight = document.body.clientWidth < 768 ? that.verticalHeight : that.horizontalHeight;
+          that.echart.setOption(
+              document.body.clientWidth < 768
+                ? that.verticalOption
+                : that.horizontalOption,
+          );
+          that.echart.resize();
+        }, 500);
+      };
+    })();
     this.initEchart();
   },
 };
